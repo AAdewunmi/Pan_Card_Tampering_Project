@@ -1,6 +1,6 @@
-# > UNDER CONSTRUCTION <
+# > 🛠️ UNDER CONSTRUCTION <
 
-#  PAN Card Tampering Detection System
+#  PAN Card Tampering Detection (Machine Learning) System
 
 A machine learning-based system designed to detect tampering attempts in Indian Permanent Account Number (PAN) cards. This project uses computer vision and deep learning techniques to identify potential fraud in PAN card documents.
 
@@ -20,10 +20,10 @@ This project addresses the critical need for automated PAN card verification sys
 
 - Python 3.x
 - OpenCV
-- TensorFlow/Keras
-- NumPy
-- Scikit-image
-- Google Colab
+- Scikit-Learn
+- PyPI
+- PIL
+- Jupyter Notebook
 
 ##  Getting Started
 
@@ -36,7 +36,5 @@ This project addresses the critical need for automated PAN card verification sys
 ##  Contributing
 
 Contributions are welcome! Please submit pull requests with detailed explanations of changes. For major changes, please open an issue first to discuss the proposed modifications.
-
-##  License
 
 ## Contact
