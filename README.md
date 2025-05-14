@@ -18,11 +18,14 @@ This project addresses the critical need for automated PAN card verification sys
 
 ##  Built With
 
-- Python 3.x
-- OpenCV
-- Scikit-Learn
-- PyPI
-- PIL
+- Python 3
+- Flask
+- imutils
+- Keras
+- opencv
+- Pillow
+- tensorflow
+- scikit-image
 - Jupyter Notebook
 
 ##  Getting Started
