@@ -20,27 +20,71 @@ def index():
         return render_template('index.html')
     # Execute if request is POST
     if request.method == 'POST':
-        # Get the uploaded image
-        file_upload = request.files['file_upload']
-        filename = file_upload.filename
+        print("Request files:", request.files)
+        print("Request form:", request.form)
+
+        # Check if 'image_upload' and 'logo_upload' are in the request
+        if (
+            'image_upload' not in request.files or
+            'logo_upload' not in request.files
+        ):
+            return "Missing file part in the request", 400
+
+        # Retrieve the uploaded files
+        image_upload = request.files.get('image_upload')
+        logo_upload = request.files.get('logo_upload')
+
+        if not image_upload or not logo_upload:
+            return "No file selected", 400
+
+        # Save the uploaded files
+        image_upload.save(
+            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
+        )
+        logo_upload.save(
+            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'logo.jpg')
+        )
+
+        filename = image_upload.filename
         # Resize and save the uploaded image
-        uploaded_image = Image.open(file_upload).resize((250, 160))
+        uploaded_image = Image.open(image_upload).resize((250, 160))
         uploaded_image.save(
             os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
         )
 
+        # Debugging: Check if uploaded files are saved correctly
+        print(
+            "Uploaded image path:",
+            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
+        )
+        print(
+            "Logo image path:",
+            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'logo.jpg')
+        )
+
+        # Check if the original image exists
+        original_image_path = os.path.join(
+            app.config['EXISTING_FILE'], 'original.png'
+        )
+        if not os.path.exists(original_image_path):
+            return "Original image not found", 404
+
+        # Debugging: Check if original image is being processed
+        print(
+            "Original image path:",
+            os.path.join(app.config['EXISTING_FILE'], 'original.png')
+        )
+
         # Resize and save the original image to ensure both uploaded and
         # original images match in size
-        original_image = Image.open(
-            os.path.join(app.config['EXISTING_FILE'], 'image.jpg')
-        ).resize((250, 160))
+        original_image = Image.open(original_image_path).resize((250, 160))
         original_image.save(
-            os.path.join(app.config['EXISTING_FILE'], 'image.jpg')
+            os.path.join(app.config['EXISTING_FILE'], 'original.png')
         )
 
         # Read uploaded and original images as arrays
         original_image = cv2.imread(
-            os.path.join(app.config['EXISTING_FILE'], 'image.jpg')
+            os.path.join(app.config['EXISTING_FILE'], 'original.png')
         )
         uploaded_image = cv2.imread(
             os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
@@ -56,6 +100,9 @@ def index():
         )
         diff = (diff * 255).astype("uint8")
 
+        # Debugging: Check if Structural Similarity Index (SSI) is computed
+        print("SSI Score:", score)
+
         # Calculate threshold and contours
         threshold = cv2.threshold(
             diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
@@ -65,7 +112,10 @@ def index():
         )
         cnts = imutils.grab_contours(cnts)
 
-        # Draw contours on image
+        # Debugging: Check if contours are found
+        print("Contours found:", len(cnts))
+
+        # Fix incorrect arguments for cv2.rectangle
         for c in cnts:
             (x, y, w, h) = cv2.boundingRect(c)
             cv2.rectangle(
