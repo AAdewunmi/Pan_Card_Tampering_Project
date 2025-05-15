@@ -22,3 +22,9 @@ class DevelopmentConfig(Config):
 
 class DebugConfig(Config):
     DEBUG = False
+
+
+class DefaultConfig:
+    DEBUG = True
+    SECRET_KEY = "your_secret_key"
+    # Add other configuration variables as needed
