@@ -8,7 +8,7 @@
   <!-- CSS  -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-  <link href="./static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="/static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
@@ -86,10 +86,12 @@
 
             <div class="input-field col s3">
               <div style="text-align: center; padding-top: 50px; margin-left: 100px">
-                <img src='{{ full_filename }}' width="500" height="300">
+                <h5>Image difference in black</h5>
+                <img src='/static/generated/image_thresh.jpg' width="500" height="300">
               </div>
             </div>
 
+            
           </div>
         </form>
       </div>
@@ -100,7 +102,7 @@
   </div>
 
   <!--  Scripts-->
-  <script src="./static/js/materialize.js"></script>
+  <script src="/static/js/materialize.js"></script>
   <script type="text/javascript">
     var imagebox = document.getElementById('imagebox');
     var textbox = document.getElementById('textboxes');

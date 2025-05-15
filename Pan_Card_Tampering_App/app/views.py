@@ -5,150 +5,43 @@ from skimage.metrics import structural_similarity
 import imutils
 import cv2
 from PIL import Image
-
+from flask import Flask, request, render_template, redirect
+from werkzeug.utils import secure_filename
+import os
 # Adding path to config
 app.config['INITIAL_FILE_UPLOADS'] = 'app/static/uploads'
 app.config['EXISTING_FILE'] = 'app/static/original'
 app.config['GENERATED_FILE'] = 'app/static/generated'
 
 
-# Route to home page
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'  # Ensure this directory exists
+
 @app.route('/', methods=['GET', 'POST'])
-def index():
-    # Execute if request is GET
-    if request.method == 'GET':
-        return render_template('index.html')
-    # Execute if request is POST
+def upload_file():
     if request.method == 'POST':
-        print("Request files:", request.files)
-        print("Request form:", request.form)
+        image_file = request.files.get('image_upload')
+        logo_file = request.files.get('logo_upload')
+        watermark_text = request.form.get('text_mark')
+        option = request.form.get('options')
 
-        # Check if 'image_upload' and 'logo_upload' are in the request
-        if (
-            'image_upload' not in request.files or
-            'logo_upload' not in request.files
-        ):
-            return "Missing file part in the request", 400
+        if image_file:
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image_file.filename))
+            image_file.save(image_path)
 
-        # Retrieve the uploaded files
-        image_upload = request.files.get('image_upload')
-        logo_upload = request.files.get('logo_upload')
+        if option == 'logo_watermark' and logo_file:
+            logo_path = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(logo_file.filename))
+            logo_file.save(logo_path)
+            # Process image + logo watermark here...
 
-        if not image_upload or not logo_upload:
-            return "No file selected", 400
+        elif option == 'text_watermark' and watermark_text:
+            # Process image + text watermark here...
+            pass
 
-        # Save the uploaded files
-        image_upload.save(
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
-        )
-        logo_upload.save(
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'logo.jpg')
-        )
+        # Redirect or return result image
+        return render_template('index.html')  # Or return a page showing results
 
-        filename = image_upload.filename
-        # Resize and save the uploaded image
-        uploaded_image = Image.open(image_upload).resize((250, 160))
-        uploaded_image.save(
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
-        )
-
-        # Debugging: Check if uploaded files are saved correctly
-        print(
-            "Uploaded image path:",
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
-        )
-        print(
-            "Logo image path:",
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'logo.jpg')
-        )
-
-        # Check if the original image exists
-        original_image_path = os.path.join(
-            app.config['EXISTING_FILE'], 'original.png'
-        )
-        if not os.path.exists(original_image_path):
-            return "Original image not found", 404
-
-        # Debugging: Check if original image is being processed
-        print(
-            "Original image path:",
-            os.path.join(app.config['EXISTING_FILE'], 'original.png')
-        )
-
-        # Resize and save the original image to ensure both uploaded and
-        # original images match in size
-        original_image = Image.open(original_image_path).resize((250, 160))
-        original_image.save(
-            os.path.join(app.config['EXISTING_FILE'], 'original.png')
-        )
-
-        # Read uploaded and original images as arrays
-        original_image = cv2.imread(
-            os.path.join(app.config['EXISTING_FILE'], 'original.png')
-        )
-        uploaded_image = cv2.imread(
-            os.path.join(app.config['INITIAL_FILE_UPLOADS'], 'image.jpg')
-        )
-
-        # Convert images to grayscale
-        original_gray = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
-        uploaded_gray = cv2.cvtColor(uploaded_image, cv2.COLOR_BGR2GRAY)
-
-        # Compute the Structural Similarity Index (SSI)
-        (score, diff) = structural_similarity(
-            original_gray, uploaded_gray, full=True
-        )
-        diff = (diff * 255).astype("uint8")
-
-        # Debugging: Check if Structural Similarity Index (SSI) is computed
-        print("SSI Score:", score)
-
-        # Calculate threshold and contours
-        threshold = cv2.threshold(
-            diff, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU
-        )[1]
-        cnts = cv2.findContours(
-            threshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-        cnts = imutils.grab_contours(cnts)
-
-        # Debugging: Check if contours are found
-        print("Contours found:", len(cnts))
-
-        # Fix incorrect arguments for cv2.rectangle
-        for c in cnts:
-            (x, y, w, h) = cv2.boundingRect(c)
-            cv2.rectangle(
-                original_image, (x, y), (x + w, y + h), (0, 255, 0), 2
-            )
-            cv2.rectangle(
-                uploaded_image, (x, y), (x + w, y + h), (0, 255, 0), 2
-            )
-
-        # Save all output images
-        cv2.imwrite(
-            os.path.join(app.config['GENERATED_FILE'], 'image_original.jpg'),
-            original_image
-        )
-        cv2.imwrite(
-            os.path.join(app.config['GENERATED_FILE'], 'image_uploaded.jpg'),
-            uploaded_image
-        )
-        cv2.imwrite(
-            os.path.join(app.config['GENERATED_FILE'], 'image_diff.jpg'),
-            diff
-        )
-        cv2.imwrite(
-            os.path.join(app.config['GENERATED_FILE'], 'image_thresh.jpg'),
-            threshold
-        )
-        prediction = str(round(score * 100, 2)) + '%' + ' correct'
-        return render_template(
-            'index.html',
-            pred=prediction,
-            filename=filename
-        )
-
+    return render_template('index.html')  # Initial GET request
 
 # Main function to run the app
 if __name__ == '__main__':
