@@ -44,8 +44,20 @@ def compare_images(original_path, tampered_path, result_path, side_by_side_path)
 
     # Add borders with labels
     def add_border_with_label(img, label):
+        # Map label to color
+        color_map = {
+            "Original": (50, 150, 255),     # Orange-Blue
+            "Tampered": (0, 200, 0),        # Green
+            "Differences": (0, 0, 255)      # Red
+        }
+        label_color = color_map.get(label, (0, 0, 0))
+
+        # Add white border around image
         bordered = cv2.copyMakeBorder(img, 50, 10, 10, 10, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        cv2.putText(bordered, label, (20, 35), cv2.FONT_HERSHEY_SIMPLEX, 1, (50, 50, 50), 2, cv2.LINE_AA)
+
+        # Put label text at top
+        cv2.putText(bordered, label, (20, 35), cv2.FONT_HERSHEY_SIMPLEX, 1.2, label_color, 2, cv2.LINE_AA)
+
         return bordered
 
     labeled_original = add_border_with_label(imageA, "Original")
