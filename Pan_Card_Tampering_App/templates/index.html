@@ -18,6 +18,10 @@
     <label>Upload Tampered Image:</label><br>
     <input type="file" name="tampered" required><br><br>
     <input type="submit" value="Compare">
+    <div class="row center" style="margin-top: 50px">
+      <button type="submit" class="btn-large" style="background-color: #5e72e4">Check</button>
+      <button type="submit" name="clear" value="true" class="btn-large red lighten-1" style="margin-left: 20px">Clear</button>
+    </div>
   </form>
 
   {% if ssim_score %}
