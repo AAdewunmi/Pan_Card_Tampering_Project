@@ -1,8 +1,7 @@
 Flask
 imutils
-Keras
-opencv-python
-Pillow
-scikit-image
-gunicorn
-numpy
+Flask==2.3.3
+Werkzeug==2.3.7
+opencv-python==4.9.0.80
+scikit-image==0.22.0
+numpy==1.26.4
