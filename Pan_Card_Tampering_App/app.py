@@ -70,14 +70,24 @@ def compare_images(original_path, tampered_path, result_path, side_by_side_path)
 
     return score
 
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        original = request.files['original']
-        tampered = request.files['tampered']
+        # Handle Clear button
+        if request.form.get('clear') == 'true':
+            # Optionally delete old results
+            for f in ['diff.png', 'comparison.png']:
+                path = os.path.join(app.config['RESULT_FOLDER'], f)
+                if os.path.exists(path):
+                    os.remove(path)
+            for f in os.listdir(app.config['UPLOAD_FOLDER']):
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], f))
+
+            return render_template('index.html')  # Render with no data
+
+        # Handle normal submission
+        original = request.files.get('original')
+        tampered = request.files.get('tampered')
 
         if original and tampered:
             original_filename = secure_filename(original.filename)
@@ -91,16 +101,17 @@ def index():
 
             result_path = os.path.join(app.config['RESULT_FOLDER'], 'diff.png')
             side_by_side_path = os.path.join(app.config['RESULT_FOLDER'], 'comparison.png')
+
             score = compare_images(original_path, tampered_path, result_path, side_by_side_path)
 
-        return render_template(
-            'index.html',
-            ssim_score=round(score, 4),
-            result_image=result_path,
-            comparison_image=side_by_side_path
-        )
-
-    return render_template('index.html')
+            return render_template(
+                'index.html',
+                ssim_score=round(score, 4),
+                result_image='static/results/diff.png',
+                comparison_image='static/results/comparison.png',
+                original_image=original_filename,
+                tampered_image=tampered_filename
+            )
 
 
 if __name__ == '__main__':

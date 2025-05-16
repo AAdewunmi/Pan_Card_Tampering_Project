@@ -12,6 +12,7 @@
 </head>
 <body>
   <h2>Pan Card Tampering Detection</h2>
+  
   <form method="POST" enctype="multipart/form-data">
     <label>Upload Original Image:</label><br>
     <input type="file" name="original" required><br>
@@ -20,17 +21,31 @@
     <input type="submit" value="Compare">
     <div class="row center" style="margin-top: 50px">
       <button type="submit" class="btn-large" style="background-color: #5e72e4">Check</button>
-      <button type="submit" name="clear" value="true" class="btn-large red lighten-1" style="margin-left: 20px">Clear</button>
+      <button type="button" id="clear-btn" class="btn-large red lighten-1" style="margin-left: 20px">Clear</button>
     </div>
-  </form>
+ </form>
+ {% if ssim_score %}
+		  <div id="results">
+		    <div class="ssim">Structural Similarity Index (SSIM): <span id="ssim-value">{{ ssim_score }}</span></div>
+		    <br>
+		    <h3>Side-by-Side Comparison (Original | Tampered | Differences)</h3>
+		    <div><img id="comparison-img" src="{{ comparison_image }}" alt="Side-by-Side Comparison"></div>
+		  </div>
+		{% endif %}
 
-  {% if ssim_score %}
-  <div class="ssim">Structural Similarity Index (SSIM): {{ ssim_score }}</div>
-  
-  <br>
-  <h3>Side-by-Side Comparison (Original | Tampered | Differences)</h3>
-  <div><img src="{{ comparison_image }}" alt="Side-by-Side Comparison"></div>
-  
-  {% endif %}
+<script>
+  document.getElementById("clear-btn").addEventListener("click", function () {
+    // Clear the file inputs
+    document.querySelector('input[name="original"]').value = '';
+    document.querySelector('input[name="tampered"]').value = '';
+
+    // Hide the results section
+    const resultsDiv = document.getElementById("results");
+    if (resultsDiv) {
+      resultsDiv.innerHTML = '';
+    }
+  });
+</script>
+
 </body>
 </html>
