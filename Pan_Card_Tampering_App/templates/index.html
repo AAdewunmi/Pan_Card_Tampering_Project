@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pan Card Tampering Detection</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    input[type="file"] { margin: 10px; }
+    img { margin-top: 20px; max-width: 600px; border: 1px solid #ccc; }
+    .ssim { font-size: 20px; margin-top: 20px; font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+  <h2>Pan Card Tampering Detection</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <label>Upload Original Image:</label><br>
+    <input type="file" name="original" required><br>
+    <label>Upload Tampered Image:</label><br>
+    <input type="file" name="tampered" required><br><br>
+    <input type="submit" value="Compare">
+  </form>
+
+  {% if ssim_score %}
+  <div class="ssim">Structural Similarity Index (SSIM): {{ ssim_score }}</div>
+  
+  <br>
+  <h3>Side-by-Side Comparison (Original | Tampered | Differences)</h3>
+  <div><img src="{{ comparison_image }}" alt="Side-by-Side Comparison"></div>
+  
+  {% endif %}
+</body>
+</html>
