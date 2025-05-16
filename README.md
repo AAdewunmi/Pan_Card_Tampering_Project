@@ -10,7 +10,7 @@ This project addresses the critical need for automated PAN card verification sys
 
 ---
 
-## 🚀 Features
+##  Features
 
 * Upload original and tampered images.
 * Automatically resize images for valid comparison.
@@ -26,15 +26,18 @@ This project addresses the critical need for automated PAN card verification sys
 
 ---
 
-## 🖥️ Demo
+##  Demo
 
-<img src="static/results/sample_ui.png" alt="Demo UI" width="700"/>
+![](Pan_Card_Tampering_App/Demo/screenshot_1.png)
+
+
+![](Pan_Card_Tampering_App/Demo/screenshot_2.png)
 
 ---
 
-## 📦 Requirements
+##  Requirements
 
-See [`requirements.txt`](requirements.txt)
+See [`requirements.txt`](Pan_Card_Tampering_App/requirements.txt)
 
 To install:
 
@@ -44,12 +47,12 @@ pip install -r requirements.txt
 
 ---
 
-## 🔧 How to Run
+##  How to Run
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/pan-card-tampering-detector.git
+   git clone https://github.com/AAdewunmi/Pan_Card_Tampering_Project.git
    cd pan-card-tampering-detector
    ```
 
@@ -73,7 +76,7 @@ pip install -r requirements.txt
 
 ---
 
-## 📁 Folder Structure
+##  Folder Structure
 
 ```
 pan-card-tampering/
@@ -92,7 +95,7 @@ pan-card-tampering/
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 * Python 3.x
 * Flask
@@ -102,12 +105,18 @@ pan-card-tampering/
 
 ---
 
-## 📌 Future Improvements
+##  Future Improvements
 
 * Add drag-and-drop upload.
 * API endpoint for programmatic access.
 * Authentication (for secured access).
 * Upload history or session management.
+
+---
+
+## Jupyter Notebook
+
+See [`Pan_Card_Tampering_Project.ipynb`](notebooks/Pan_Card_Tampering_Project.ipynb)
 
 ---
 
@@ -118,6 +127,13 @@ Contributions are welcome! Please submit pull requests with detailed explanation
 ---
 
 ## Contact
+If you have questions or suggestions, feel free to reach out or open an issue.
+
+---
+
+## Author
+
+Adrian Adewunmi – [GitHub](https://github.com/AAdewunmi)
 
 ---
 
